@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sabor Chiquitano | Restaurante & Gastronomía Típica</title>
+
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <meta name="theme-color" content="#09090b">
+  <meta name="description" content="Restaurante Sabor Chiquitano: auténtica gastronomía chiquitana en San José de Chiquitos, Bolivia. Reserva tu mesa por WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/icon1.svg">
+</head>
+<body>
+
+  <!-- Header principal -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#" class="brand">
+        <span class="brand-mark brand-font">S.</span>
+        <div class="brand-copy">
+          <strong>SABOR</strong>
+          <small>CHIQUITANO</small>
+        </div>
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="#inicio">Inicio</a>
+        <a href="#experiencia">El Restaurante</a>
+        <a href="#menu">Menú</a>
+        <a href="#reservas">Reservas</a>
+        <a href="#testimonios">Opiniones</a>
+      </nav>
+
+      <div class="header-actions">
+        <div id="badge-admin-session" style="display:none;" class="badge-admin">
+          <span>Admin</span>
+          <button id="btn-admin-logout" type="button">Salir</button>
+        </div>
+
+        <!-- Toggle Tema (Sun/Moon) -->
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Cambiar Tema" type="button">
+          <i class="fa-solid fa-sun" id="themeIcon"></i>
+        </button>
+
+        <button id="cartToggleBtn" class="theme-toggle-btn cart-toggle-btn" aria-label="Abrir carrito" aria-controls="cartModal" type="button" title="Carrito de compras">
+          <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i>
+          <span id="cartCount" class="cart-count" hidden>0</span>
+        </button>
+
+        <button onclick="openWhatsappModal('Reserva de Mesa General')" class="btn-book-desktop" type="button">
+          Reservar Mesa ↗
+        </button>
+
+        <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Abrir Menú" aria-expanded="false" aria-controls="mobileMenu" type="button">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="mobile-menu" id="mobileMenu" hidden>
+      <a href="#inicio">Inicio</a>
+      <a href="#experiencia">El Restaurante</a>
+      <a href="#menu">Menú</a>
+      <a href="#reservas">Reservas</a>
+      <a href="#testimonios">Opiniones</a>
+      <button onclick="openWhatsappModal('Reserva de Mesa General'); toggleMobileMenu();" class="mobile-menu-book" type="button">
+        Reservar Mesa ↗
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO / CARRUSEL DINÁMICO ADMIN -->
+    <section class="hero" id="inicio">
+      <div class="hero-carousel-track" id="heroCarouselTrack">
+        <div class="hero-slide active" style="background-image: url('');"></div>
+      </div>
+      <div class="hero-shade"></div>
+
+      <!-- Controles Carrusel Admin -->
+      <div id="carousel-admin-controls" class="admin-only-control hero-carousel-controls" hidden>
+        <button id="btn-add-hero-slide" class="btn btn-primary" type="button" style="padding:8px 14px; font-size:11px;">
+          <i class="fa-solid fa-plus"></i> Añadir Foto
+        </button>
+        <button id="btn-delete-hero-slide" class="btn btn-danger" type="button" style="padding:8px 14px; font-size:11px;">
+          <i class="fa-solid fa-trash"></i> Eliminar Actual
+        </button>
+      </div>
+
+      <button class="carousel-arrow prev" onclick="moveHeroSlide(-1)" aria-label="Foto anterior" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="carousel-arrow next" onclick="moveHeroSlide(1)" aria-label="Foto siguiente" type="button"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="carousel-dots" id="heroCarouselDots"></div>
+
+      <div class="hero-content">
+        <span class="eyebrow" style="color:var(--text-muted);">
+          <span style="width:26px; height:1px; background:currentColor; display:inline-block; margin-right:8px;"></span>
+          EL MEJOR SABOR DE LO TÍPICO
+        </span>
+
+        <h1>Gastronomía para<br><em>volver a sentir.</em></h1>
+
+        <p class="hero-desc">
+          Disfrute de la auténtica gastronomía chiquitana, platos tradicionales, majaditos, locros y carnes a la parrilla preparadas con pasión.
+        </p>
+
+        <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+          <button onclick="openWhatsappModal('Reserva de Mesa')" class="btn" style="background:var(--cream-btn); color:var(--ink-btn); font-weight:700;" type="button">
+            Reservar Mesa <span aria-hidden="true">↗</span>
+          </button>
+          <a href="#menu" style="color:var(--text-main); font-size:12px; font-weight:600; text-decoration:underline; text-underline-offset:6px;">
+            Ver la Carta ↓
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-caption">
+        <span>SAN JOSÉ DE CHIQUITOS — BOLIVIA</span>
+        <span>TRADICIÓN Y SABOR</span>
+      </div>
+    </section>
+
+    <!-- SOBRE EL RESTAURANTE -->
+    <section id="experiencia" class="shell" style="padding: clamp(64px, 9vw, 110px) 0;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:40px; align-items:center;">
+        <div>
+          <span class="eyebrow" style="color:var(--accent);">SABORES AUTÉNTICOS</span>
+          <h2 class="brand-font">Una experiencia gastronómica chiquitana</h2>
+          <p style="color:var(--text-muted); line-height:1.8; margin-bottom:24px;">
+            Atendemos con pasión en el centro histórico de San José de Chiquitos. Platos elaborados con insumos locales frescos y recetas tradicionales transmitidas por generaciones.
+          </p>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <i class="fa-solid fa-fire-burner" style="color:var(--accent); margin-top:4px;"></i>
+              <div>
+                <strong style="display:block; font-size:14px; color:var(--text-main);">Carnes & Parrilla</strong>
+                <span style="font-size:12px; color:var(--text-muted);">Cortes jugosos preparados al carbón al estilo cruceño.</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <i class="fa-solid fa-utensils" style="color:var(--accent); margin-top:4px;"></i>
+              <div>
+                <strong style="display:block; font-size:14px; color:var(--text-main);">Comidas Típicas</strong>
+                <span style="font-size:12px; color:var(--text-muted);">Majaditos, Keperi, Locros y Picantes auténticos.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div class="editable-image-frame">
+            <img id="image-about-room" alt="Plato Típico" hidden>
+            <button class="image-edit-button" data-image-key="about-room" type="button" title="Cambiar foto de plato" hidden><i class="fa-solid fa-camera"></i></button>
+          </div>
+          <div style="background:var(--surface-card); border:1px solid var(--surface-border); border-radius:var(--radius); padding:24px; text-align:center; display:flex; flex-direction:column; justify-content:center;">
+            <span class="brand-font" style="font-size:36px; color:var(--accent); font-weight:700;">100%</span>
+            <span style="font-size:12px; color:var(--text-muted);">Sabor Tradicional</span>
+          </div>
+          <div style="background:var(--surface-card); border:1px solid var(--surface-border); border-radius:var(--radius); padding:24px; text-align:center; display:flex; flex-direction:column; justify-content:center;">
+            <i class="fa-solid fa-clock" style="font-size:24px; color:var(--accent); margin-bottom:8px;"></i>
+            <strong style="font-size:12px; color:var(--text-main); text-transform:uppercase;">Atención Diaria</strong>
+            <span style="font-size:11px; color:var(--text-muted);">8:00 a 22:30 Hrs.</span>
+          </div>
+          <div class="editable-image-frame">
+            <img id="image-about-gallery" alt="Ambiente del Restaurante" hidden>
+            <button class="image-edit-button" data-image-key="about-gallery" type="button" title="Cambiar foto de ambiente" hidden><i class="fa-solid fa-camera"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENÚ / CARTA -->
+    <section id="menu" class="shell" style="padding: clamp(64px, 9vw, 110px) 0;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px; margin-bottom: 30px;">
+        <div>
+          <span class="eyebrow" style="color:var(--accent);">NUESTRA CARTA</span>
+          <h2 class="brand-font">Menú Gastronómico</h2>
+        </div>
+
+        <div class="room-section-actions">
+          <div id="filtrosContenedor" class="filter-tabs">
+            <button data-filter="todos" class="filter-btn active" type="button">Todos</button>
+            <button data-filter="tipicas" class="filter-btn" type="button">Típicas</button>
+            <button data-filter="parrilla" class="filter-btn" type="button">Parrilla & Biffes</button>
+            <button data-filter="hamburguesas" class="filter-btn" type="button">Hamburguesas</button>
+            <button data-filter="especiales" class="filter-btn" type="button">Especiales</button>
+            <button data-filter="bebidas" class="filter-btn" type="button">Bebidas & Postres</button>
+          </div>
+          <button id="btn-add-dish" class="btn btn-primary admin-only-control" type="button" hidden>
+            <i class="fa-solid fa-plus"></i> Añadir plato
+          </button>
+        </div>
+      </div>
+
+      <div id="loadingState" role="status" style="text-align:center; padding: 60px 0;">
+        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:32px; color:var(--accent);"></i>
+        <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">Sincronizando el menú con Supabase...</p>
+      </div>
+
+      <div id="platosGrid" class="rooms-grid"></div>
+    </section>
+
+    <!-- RESERVAS Y UBICACIÓN -->
+    <section id="reservas" class="shell" style="padding-bottom: 90px;">
+      <div style="background:var(--surface-card); border:1px solid var(--surface-border); border-radius:var(--radius); overflow:hidden; padding: 32px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:32px; align-items:start;">
+          <div>
+            <span class="eyebrow" style="color:var(--accent);">VENGA A VISITARNOS</span>
+            <h2 class="brand-font">Reserve su mesa hoy</h2>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:24px;">
+              Le esperamos con el auténtico sabor de la comida típica. Atendemos todos los días y feriados.
+            </p>
+
+            <ul style="list-style:none; padding:0; margin:0 0 24px 0; font-size:13px; display:flex; flex-direction:column; gap:14px; color:var(--text-main);">
+              <li><i class="fa-solid fa-location-dot" style="color:var(--accent); margin-right:10px;"></i> San José de Chiquitos, Santa Cruz, Bolivia</li>
+              <li><i class="fa-solid fa-clock" style="color:var(--accent); margin-right:10px;"></i> Lunes a Domingos: 8:00 a 22:30 Hrs.</li>
+              <li><i class="fa-solid fa-phone" style="color:var(--accent); margin-right:10px;"></i> +591 77852598 / +591 64465075</li>
+            </ul>
+
+            <strong style="display:block; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px;">Síguenos en Redes Sociales</strong>
+            <div style="display:flex; gap:12px;">
+              <a href="https://facebook.com" target="_blank" rel="noopener" class="theme-toggle-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://instagram.com" target="_blank" rel="noopener" class="theme-toggle-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://tiktok.com" target="_blank" rel="noopener" class="theme-toggle-btn" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          </div>
+
+          <div>
+            <form onsubmit="sendWhatsappMessage(event)">
+              <div class="form-group">
+                <label for="reservationName">Nombre Completo</label>
+                <input type="text" id="reservationName" class="form-input" placeholder="Ej. Juan Pérez" required>
+              </div>
+              <div class="form-group">
+                <label for="reservationPhone">Teléfono</label>
+                <input type="tel" id="reservationPhone" class="form-input" placeholder="+591 ...">
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="form-group">
+                  <label for="reservationDate">Fecha</label>
+                  <input type="date" id="reservationDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="reservationTime">Hora</label>
+                  <input type="time" id="reservationTime" class="form-input" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="reservationMessage">Solicitud especial o pedido previo</label>
+                <textarea id="reservationMessage" class="form-textarea" rows="3" placeholder="Ej. Mesa en el patio..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-whatsapp" style="width:100%;">
+                <i class="fa-brands fa-whatsapp"></i> Confirmar Reserva por WhatsApp
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="location-map">
+          <div class="location-map-heading">
+            <div>
+              <span class="eyebrow" style="color:var(--accent);">CÓMO LLEGAR</span>
+              <h3 class="brand-font">Visítanos en San José de Chiquitos</h3>
+            </div>
+            <a class="btn btn-secondary" href="https://maps.app.goo.gl/KJzWNqRmH1a9Yhg19" target="_blank" rel="noopener noreferrer">
+              <i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i> Abrir en Google Maps
+            </a>
+          </div>
+          <div class="location-map-frame">
+            <iframe
+              title="Ubicación de Sabor Chiquitano en Google Maps"
+              src="https://www.google.com/maps?q=-17.8462683%2C-60.7425239&z=17&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section id="testimonios" style="background:var(--surface-card); border-top:1px solid var(--surface-border); padding: 80px 0;">
+      <div class="shell">
+        <div class="testimonials-heading">
+          <div>
+            <span class="eyebrow" style="color:var(--accent);">OPINIONES DE NUESTROS COMENSALES</span>
+            <h2 class="brand-font">Testimonios & Reseñas</h2>
+          </div>
+          <button id="btn-add-testimonial" class="btn btn-primary admin-only-control" type="button" hidden>
+            <i class="fa-solid fa-plus"></i> Añadir reseña
+          </button>
+        </div>
+
+        <div id="testimonialsGrid" class="testimonials-grid"></div>
+        <div id="pendingTestimonials" class="pending-testimonials" hidden></div>
+
+        <form id="guest-review-form" class="guest-review-form">
+          <h3 class="brand-font">Comparte tu experiencia en el restaurante</h3>
+          <div class="guest-review-fields">
+            <div class="form-group">
+              <label for="guest-review-name">Tu nombre</label>
+              <input id="guest-review-name" name="nombre" class="form-input" maxlength="80" required>
+            </div>
+            <div class="form-group">
+              <label for="guest-review-context">¿Qué probaste o motivo de visita?</label>
+              <input id="guest-review-context" name="contexto" class="form-input" maxlength="100" placeholder="Almuerzo familiar, Majadito...">
+            </div>
+            <div class="form-group">
+              <label for="guest-review-rating">Calificación</label>
+              <select id="guest-review-rating" name="calificacion" class="form-select" required>
+                <option value="5">★★★★★ - Excelente</option>
+                <option value="4">★★★★☆ - Muy buena</option>
+                <option value="3">★★★☆☆ - Buena</option>
+                <option value="2">★★☆☆☆ - Regular</option>
+                <option value="1">★☆☆☆☆ - Puede mejorar</option>
+              </select>
+            </div>
+            <div class="form-group guest-review-comment">
+              <label for="guest-review-comment">Tu reseña sobre la comida y atención</label>
+              <textarea id="guest-review-comment" name="comentario" class="form-textarea" rows="3" minlength="5" maxlength="1200" required></textarea>
+            </div>
+          </div>
+          <button class="btn btn-secondary" type="submit">Enviar reseña</button>
+          <p id="guest-review-status" class="guest-review-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer style="background:var(--surface-card); border-top:1px solid var(--surface-border); padding: 60px 0 30px;">
+    <div class="shell">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:32px; padding-bottom:40px; border-bottom:1px solid var(--surface-border);">
+        <div>
+          <a href="#" class="brand" style="margin-bottom:12px;">
+            <span class="brand-mark brand-font">S.</span>
+            <div class="brand-copy">
+              <strong>SABOR</strong>
+              <small>CHIQUITANO</small>
+            </div>
+          </a>
+          <p style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+            Restaurante Sabor Chiquitano — El mejor sabor de lo típico en el corazón de San José de Chiquitos.
+          </p>
+        </div>
+
+        <div>
+          <strong style="display:block; font-size:12px; color:var(--text-main); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px;">Contacto & Ubicación</strong>
+          <ul style="list-style:none; padding:0; margin:0; font-size:12px; color:var(--text-muted); display:flex; flex-direction:column; gap:10px;">
+            <li><i class="fa-solid fa-phone" style="color:var(--accent); margin-right:8px;"></i> +591 77852598 / 64465075</li>
+            <li><i class="fa-solid fa-location-dot" style="color:var(--accent); margin-right:8px;"></i> San José de Chiquitos, Bolivia</li>
+            <li><i class="fa-solid fa-clock" style="color:var(--accent); margin-right:8px;"></i> Lunes a Domingo: 8:00 - 22:30</li>
+          </ul>
+        </div>
+
+        <div>
+          <strong style="display:block; font-size:12px; color:var(--text-main); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px;">Especialidades</strong>
+          <p style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+            Locro de Gallina Criolla, Keperi al Horno, Majaditos, cortes a la parrilla, biffes y deliciosos postres típicos.
+          </p>
+        </div>
+      </div>
+
+      <div style="padding-top:24px; font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <p>© 2026 Restaurante Sabor Chiquitano. Todos los derechos reservados.</p>
+        <p>San José de Chiquitos - Bolivia</p>
+        <button id="btn-admin-login" class="admin-access-button" type="button" aria-label="Acceso administrador" title="Acceso administrador">
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODALES ADMIN Y FORMULARIOS -->
+  <div id="modal-admin" class="modal-overlay">
+    <div class="modal-card" style="text-align:center;">
+      <i class="fa-solid fa-shield-halved" style="font-size:32px; color:var(--accent); margin-bottom:12px;"></i>
+      <h3 class="brand-font" style="font-size:22px; margin:0 0 8px;">Acceso Administrador</h3>
+      <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Inicia sesión para gestionar el menú y la web.</p>
+
+      <form id="admin-login-form">
+        <div class="form-group" style="text-align:left;">
+          <label for="admin-email-input">Correo electrónico</label>
+          <input type="email" id="admin-email-input" required class="form-input" placeholder="admin@ejemplo.com" autocomplete="username">
+        </div>
+        <div class="form-group" style="text-align:left;">
+          <label for="admin-password-input">Contraseña</label>
+          <input type="password" id="admin-password-input" required class="form-input" placeholder="Contraseña" autocomplete="current-password">
+        </div>
+        <p id="admin-auth-error" role="alert" style="color:#ef4444; font-size:12px; display:none; margin-bottom:12px;"></p>
+        <div style="display:flex; gap:12px;">
+          <button id="btn-close-modal" type="button" class="btn btn-secondary" style="flex:1;">Cancelar</button>
+          <button id="btn-admin-submit" type="submit" class="btn btn-primary" style="flex:1;">Ingresar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Admin Plato -->
+  <div id="dish-modal" class="modal-overlay">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h3 id="dish-modal-title" class="brand-font modal-title">Añadir plato</h3>
+        <button class="btn btn-secondary modal-icon-button" type="button" data-close-modal="dish-modal" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="dish-form">
+        <input id="dish-id" type="hidden">
+        <div class="admin-form-grid">
+          <div class="form-group"><label for="dish-name">Nombre del plato</label><input id="dish-name" class="form-input" required></div>
+          <div class="form-group">
+            <label for="dish-category">Categoría</label>
+            <select id="dish-category" class="form-select">
+              <option value="tipicas">Comida Típica</option>
+              <option value="parrilla">Parrilla & Biffes</option>
+              <option value="hamburguesas">Hamburguesa</option>
+              <option value="especiales">Especial / Para compartir</option>
+              <option value="bebidas">Bebida / Postre</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="dish-price">Precio (Bs.)</label><input id="dish-price" class="form-input" type="number" min="0" step="0.5" required></div>
+          <div class="form-group">
+            <label for="dish-status">Estado</label>
+            <select id="dish-status" class="form-select">
+              <option value="disponible">Disponible</option>
+              <option value="agotado">Agotado</option>
+            </select>
+          </div>
+          <div class="form-group admin-form-full"><label for="dish-description">Descripción</label><textarea id="dish-description" class="form-textarea" rows="3" maxlength="500"></textarea></div>
+        </div>
+        <div class="modal-actions"><button class="btn btn-secondary flex-1" type="button" data-close-modal="dish-modal">Cancelar</button><button class="btn btn-primary flex-1" type="submit">Guardar plato</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Admin Testimonio -->
+  <div id="testimonial-modal" class="modal-overlay">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h3 id="testimonial-modal-title" class="brand-font modal-title">Añadir reseña</h3>
+        <button class="btn btn-secondary modal-icon-button" type="button" data-close-modal="testimonial-modal" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="testimonial-form">
+        <input id="testimonial-id" type="hidden">
+        <div class="admin-form-grid">
+          <div class="form-group"><label for="testimonial-name">Nombre del comensal</label><input id="testimonial-name" class="form-input" maxlength="80" required></div>
+          <div class="form-group"><label for="testimonial-context">Detalle de visita</label><input id="testimonial-context" class="form-input" maxlength="100"></div>
+          <div class="form-group"><label for="testimonial-rating">Calificación</label><select id="testimonial-rating" class="form-select"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+          <div class="form-group"><label for="testimonial-photo">Foto (opcional)</label><input id="testimonial-photo" class="form-input" type="file" accept="image/*"></div>
+          <div class="form-group admin-form-full"><label for="testimonial-comment">Reseña</label><textarea id="testimonial-comment" class="form-textarea" rows="4" minlength="5" maxlength="1200" required></textarea></div>
+          <label class="publish-toggle admin-form-full"><input id="testimonial-published" type="checkbox"><span>Publicar en la página</span></label>
+        </div>
+        <div class="modal-actions"><button class="btn btn-secondary flex-1" type="button" data-close-modal="testimonial-modal">Cancelar</button><button class="btn btn-primary flex-1" type="submit">Guardar reseña</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Carrito de compras -->
+  <div id="cartModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card cart-modal-card" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="modal-header">
+        <h3 id="cartTitle" class="brand-font modal-title"><i class="fa-solid fa-basket-shopping" aria-hidden="true"></i> Tu pedido</h3>
+        <button class="btn btn-secondary modal-icon-button" type="button" data-close-modal="cartModal" aria-label="Cerrar carrito"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      </div>
+      <div id="cartItems" class="cart-items" aria-live="polite"></div>
+      <div class="cart-summary">
+        <span>Subtotal</span>
+        <strong id="cartSubtotal">Bs. 0,00</strong>
+      </div>
+      <form id="cartCheckoutForm">
+        <div class="form-group">
+          <label for="cartCustomerName">Tu nombre</label>
+          <input id="cartCustomerName" class="form-input" maxlength="80" placeholder="Ej. Juan Pérez" required>
+        </div>
+        <div class="form-group">
+          <label for="cartOrderNote">Nota del pedido</label>
+          <textarea id="cartOrderNote" class="form-textarea" rows="2" maxlength="500" placeholder="Indicaciones o preferencias" required></textarea>
+        </div>
+        <div class="cart-actions">
+          <button id="cartClearBtn" class="btn btn-secondary" type="button">Vaciar carrito</button>
+          <button id="cartCheckoutBtn" class="btn btn-whatsapp" type="submit" disabled>
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Enviar pedido
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal WhatsApp Dinámico -->
+  <div id="whatsappModal" class="modal-overlay">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Consultar o reservar">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 class="brand-font" style="font-size:20px; margin:0;"><i class="fa-brands fa-whatsapp" style="color:#10b981;"></i> Consultar / Reservar</h3>
+        <button onclick="closeWhatsappModal()" class="btn btn-secondary modal-icon-button" aria-label="Cerrar" type="button"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="sendWhatsappModalMessage(event)">
+        <div class="form-group">
+          <label for="modalName">Tu Nombre</label>
+          <input type="text" id="modalName" required placeholder="Ej. Juan Pérez" class="form-input">
+        </div>
+        <div class="form-group">
+          <label for="modalRoom">Plato / Consulta</label>
+          <input type="text" id="modalRoom" readonly class="form-input" style="opacity:0.7;">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label for="modalCheckIn">Fecha</label>
+            <input type="date" id="modalCheckIn" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="modalCheckOut">Hora estimada</label>
+            <input type="time" id="modalCheckOut" required class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="modalHuespedes">N° Personas</label>
+          <select id="modalHuespedes" class="form-select">
+            <option value="1 Persona">1 Persona</option>
+            <option value="2 Personas" selected>2 Personas</option>
+            <option value="4 Personas">4 Personas</option>
+            <option value="6+ Personas">6+ Personas (Mesa familiar)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modalMessage">Mensaje adicional</label>
+          <textarea id="modalMessage" rows="2" class="form-textarea" placeholder="¿Preferencia de ubicación?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-whatsapp" style="width:100%; margin-top:10px;">
+          <i class="fa-brands fa-whatsapp"></i> Enviar Mensaje
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
